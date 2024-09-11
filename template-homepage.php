@@ -151,7 +151,9 @@ get_header();
                     <div class="globeContainer">
                         <div id="globe-container"></div>
                     </div>
-                    <div class="connect"></div>
+                    <div class="connect">
+                        <h3>Connectez votre projet au monde</h3>
+                    </div>
                 </section>
            </div>
 

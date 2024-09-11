@@ -145,12 +145,27 @@ function portfoliomax_scripts() {
 	wp_enqueue_style( 'portfoliomax-styleScss', get_template_directory_uri() . '/CSS/style.css', array(), _S_VERSION );
 
 	wp_enqueue_script( 'portfoliomax-navigation', get_template_directory_uri() . '/js/navigation.js', array(), _S_VERSION, true );
-	wp_enqueue_script( 'portfoliomax-animations', get_template_directory_uri() . '/js/animations.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'portfoliomax-burgermenu', get_template_directory_uri() . '/js/burgermenu.js', array(), _S_VERSION, true );
-	wp_enqueue_script( 'portfoliomax-globe', get_template_directory_uri() . '/js/globe.js', array(), _S_VERSION, true );
-	wp_enqueue_script( 'portfoliomax-slider', get_template_directory_uri() . '/js/slider.js', array(), _S_VERSION, true );
+	wp_enqueue_script( 'portfoliomax-dropdown', get_template_directory_uri() . '/js/dropdownMenus.js', array(), _S_VERSION, true );
 	wp_enqueue_script( 'portfoliomax-ajax', get_template_directory_uri() . '/js/ajax.js', array('jquery'), _S_VERSION, true );
-	wp_enqueue_script( 'portfoliomax-particlesBg', get_template_directory_uri() . '/js/particles.js', array('jquery'), _S_VERSION, true );
+	wp_enqueue_script( 'portfoliomax-slider', get_template_directory_uri() . '/js/slider.js', array(), _S_VERSION, true );
+	if (is_page('homepage') || is_page('404') || is_page('projects')){
+	wp_enqueue_script( 'portfoliomax-animations', get_template_directory_uri() . '/js/animations.js', array(), _S_VERSION, true );
+	} else {
+		// Deregister these scripts on other pages
+		wp_dequeue_script(get_template_directory_uri() . 'portfoliomax-animations');
+	}
+	if (is_page('homepage')) {
+		wp_enqueue_script( 'portfoliomax-globe', get_template_directory_uri() . '/js/globe.js', array(), _S_VERSION, true );
+	} else {
+		// Deregister these scripts on other pages
+		wp_dequeue_script('portfoliomax-globe');
+	}
+	if (is_page('homepage') || (is_singular() && get_page_template_slug() === 'single-project.php')) {
+		wp_enqueue_script( 'portfoliomax-particlesBg', get_template_directory_uri() . '/js/particles.js', array('jquery'), _S_VERSION, true );
+	} else {
+		wp_dequeue_script('portfoliomax-particlesBg');
+	}
 	// Slider
 	wp_enqueue_script( 'swiper-import', 'https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js');
 	// Space bg
@@ -244,3 +259,230 @@ function fetch_scallop_content() {
 
 add_action('wp_ajax_fetch_scallop_content', 'fetch_scallop_content');
 add_action('wp_ajax_nopriv_fetch_scallop_content', 'fetch_scallop_content');
+
+// Retrieve the slugs, important to use inside the querries
+function get_all_term_slugs($taxonomy) {
+	$terms = get_terms(array(
+		'taxonomy' => $taxonomy,
+		'hide_empty' => true,
+	));
+
+	$term_slugs = array();
+	if (!is_wp_error($terms) && !empty($terms)) {
+		foreach ($terms as $term) {
+			$term_slugs[] = $term->slug;
+		}
+	}
+
+	return $term_slugs;
+}
+
+// The filters of the projects page
+function filter_custom_posts_ajax() {
+	error_log('filter_custom_posts_ajax called');
+	// Nonce is used for security measure
+	// if( !isset($_POST['afp_nonce']) || !wp_verify_nonce($_POST['afp_nonce'], 'afp_nonce') )
+	// die('Permission denied');
+
+	$projecttypeTerm = sanitize_text_field($_POST['projecttype']);
+	// Also retrieve the page for the compatibility filters / load more
+	$paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
+
+    // $args = array(
+    //     'post_type' => 'project',
+    //     'posts_per_page' => 8,
+	// 	'paged' => $paged,
+    //     'orderby' => 'date',
+    //     'tax_query' => array(
+	// 		'relation' => 'AND',
+	// 	)
+    // );
+
+    // if ($categorieTerm !== 'all') {
+    //     $args['tax_query'][] = array(
+    //         'taxonomy' => 'projecttype',
+    //         'field' => 'slug',
+    //         'terms' => $projecttypeTerm,
+	// 		'operator' => 'IN'
+    //     );
+    // }
+	// else {
+	// 	$getAllTerms = get_terms(array(
+	// 		'taxonomy' => '$projecttype',
+	// 		'fields' => 'slugs',
+	// 	));
+	// 	$args['tax_query'][] = array(
+	// 		'taxonomy' => '$projecttypeTerm',
+	// 		'field' => 'slug',
+	// 		'terms' => $getAllTerms,
+	// 		'operator' => 'IN',
+	// 	);
+	// };
+
+	// $projects = new WP_Query($args);
+
+	$args = array(
+		'post_type'      => 'project',
+		'posts_per_page' => 1,
+		'paged'          => $paged,
+		'orderby'        => 'date',
+		'order'          => 'DESC',  // Added order if needed
+		'tax_query'      => array(), // Empty array for dynamic condition addition
+	);
+	
+	// If the selected category term is not "all", filter by the specific term
+	if ($projecttypeTerm !== 'all') {
+		$args['tax_query'][] = array(
+			'taxonomy' => 'projecttype',
+			'field'    => 'slug',
+			'terms'    => $projecttypeTerm,
+			'operator' => 'IN',
+		);
+	} else {
+		// Fetch all project type slugs when no specific filter is applied
+		$getAllTerms = get_terms(array(
+			'taxonomy' => 'projecttype', // Removed the incorrect variable quotes
+			'fields'   => 'slugs',
+			'hide_empty' => false, // Added to make sure empty terms are not excluded
+		));
+	
+		if (!is_wp_error($getAllTerms) && !empty($getAllTerms)) {
+			$args['tax_query'][] = array(
+				'taxonomy' => 'projecttype',
+				'field'    => 'slug',
+				'terms'    => $getAllTerms,  // Use the array of all slugs
+				'operator' => 'IN',
+			);
+		}
+	}
+	
+	$projects = new WP_Query($args);
+
+	    // Debugging: Log the query
+		error_log(print_r($args, true));
+		error_log(print_r($projects->found_posts, true));
+	
+		$response = '';
+  
+		if($projects->have_posts()) {
+			ob_start();
+			while($projects->have_posts()) : $projects->the_post();
+				get_template_part('template-parts/BlockPhoto');
+			endwhile;
+			$response = ob_get_clean();
+		} else {
+			$response = '<p>Pas de post trouvé</p>';
+		}
+		echo json_encode(['html' => $response]);
+		wp_die();
+		
+	wp_die();
+}
+// action for logged in users
+add_action('wp_ajax_filter_custom_posts_ajax', 'filter_custom_posts_ajax');
+// action for non logged users
+add_action('wp_ajax_nopriv_filter_custom_posts_ajax', 'filter_custom_posts_ajax');
+
+// Here is for the loadMore button
+function load_more_mockups() {
+	error_log('load_more_mockups called');
+	$projecttypeTerm = sanitize_text_field($_POST['projecttype']);
+	// Also retrieve the page for the compatibility filters / load more
+	$paged = isset($_POST['paged']) ? intval($_POST['paged']) : 1;
+
+    // $args = array(
+    //     'post_type' => 'project',
+    //     'posts_per_page' => 8,
+	// 	'paged' => $paged,
+    //     'orderby' => 'date',
+    //     'tax_query' => array(
+	// 		'relation' => 'AND',
+	// 	)
+    // );
+
+    // if ($categorieTerm !== 'all') {
+    //     $args['tax_query'][] = array(
+    //         'taxonomy' => 'projecttype',
+    //         'field' => 'slug',
+    //         'terms' => $projecttypeTerm,
+	// 		'operator' => 'IN'
+    //     );
+    // }
+	// else {
+	// 	$getAllTerms = get_terms(array(
+	// 		'taxonomy' => '$projecttype',
+	// 		'fields' => 'slugs',
+	// 	));
+	// 	$args['tax_query'][] = array(
+	// 		'taxonomy' => '$projecttypeTerm',
+	// 		'field' => 'slug',
+	// 		'terms' => $getAllTerms,
+	// 		'operator' => 'IN',
+	// 	);
+	// };
+
+	// $projects = new WP_Query($args);
+	$args = array(
+		'post_type'      => 'project',
+		'posts_per_page' => 1,
+		'paged'          => $paged,
+		'orderby'        => 'date',
+		'order'          => 'DESC',  // Added order if needed
+		'tax_query'      => array(), // Empty array for dynamic condition addition
+	);
+	
+	// If the selected category term is not "all", filter by the specific term
+	if ($projecttypeTerm !== 'all') {
+		$args['tax_query'][] = array(
+			'taxonomy' => 'projecttype',
+			'field'    => 'slug',
+			'terms'    => $projecttypeTerm,
+			'operator' => 'IN',
+		);
+	} else {
+		// Fetch all project type slugs when no specific filter is applied
+		$getAllTerms = get_terms(array(
+			'taxonomy' => 'projecttype', // Removed the incorrect variable quotes
+			'fields'   => 'slugs',
+			'hide_empty' => false, // Added to make sure empty terms are not excluded
+		));
+	
+		if (!is_wp_error($getAllTerms) && !empty($getAllTerms)) {
+			$args['tax_query'][] = array(
+				'taxonomy' => 'projecttype',
+				'field'    => 'slug',
+				'terms'    => $getAllTerms,  // Use the array of all slugs
+				'operator' => 'IN',
+			);
+		}
+	}
+	
+	$projects = new WP_Query($args);
+	
+	
+	$response = '';
+	$max_pages = $projects->max_num_pages;
+	
+	if($projects->have_posts()) {
+		ob_start();
+		while($projects->have_posts()) : $projects->the_post();
+			get_template_part('template-parts/BlockPhoto');
+		endwhile;
+		$response = ob_get_clean();
+		// Log the response for debugging
+		// error_log('Response HTML: ' . $response);
+		$result = [
+		  'max' => $max_pages,
+		  'html' => $response,
+		];
+	} else {
+		$result['html'] = '<p>Plus de posts à venir</p>';
+	}
+
+	
+	  echo json_encode($result);
+	  wp_die();
+}
+// And without forgetting the add_action
+add_action('wp_ajax_load_more_mockups', 'load_more_mockups');
+add_action('wp_ajax_nopriv_load_more_mockups', 'load_more_mockups');

@@ -58,7 +58,6 @@ $labelBorders: #b8bbc2;
 body {
     box-sizing: border-box;
     margin: auto;
-    min-height: 100vh;
     background-color: $darkBlue;
     color: $white;
 }
@@ -218,7 +217,7 @@ header {
     }
 }
 .openedMenu.openingTheMenu.fixedMenu {
-    background-color: $darkRed;
+    background-color: rgba(0, 0, 0, 0.2);
 
     .menu-mobile-menu-container {
         height: 100%;
@@ -227,16 +226,19 @@ header {
 .openedMenu {
     display: none;
     overflow: hidden;
+    top: 140px; // Below the navigation menu
+    right: 0;
+    z-index: 6;
 
     ul#Mobile {
         display: flex;
         flex-direction: column;
-        justify-content: center;
+        justify-content: space-evenly;
+        align-items: center;
         width: 100%;
         text-align: center;
         height: 100%;
-        padding-bottom: 10%;
-        gap: 5%;
+        gap: 15px;
 
         .burgerLink a {
             color: $white;
@@ -271,16 +273,17 @@ header {
 }
 .openingTheMenu {
     display: flex !important;
-    position: absolute;
     flex-direction: column;
-    width: 100%;
-    height: calc(100vh - 72px);
+    justify-content: center;
+    align-items: center;
     background-color: $white;
-    margin-top: 50px;
     transition: 1s ease;
 }
 .fixedMenu {
     position: fixed !important;
+    min-width: 300px;
+    max-width: 100%;
+    min-height: 300px;
 }
 .hidden {
     display: none !important;
@@ -883,6 +886,298 @@ main#primary {
 // Allows to display informations about the country and other stuff
 .scene-tooltip {
     display: none;
+}
+
+// Projects page / Mobile First
+.filtersImages {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.filters {
+    width: 100%;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 30px 0;
+    gap: 15px;
+
+    .catFor {
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+
+        .projectTypeContainer {
+            button {
+                text-transform: uppercase;
+                width: 270px;
+                border-radius: 8px;
+                border: 1.3px solid $labelBorders;
+                display: flex;
+                justify-content: space-between;
+                background-color: $white;
+                color: $black;
+                padding: 16px;
+                font-size: 12px;
+                font-weight: 500;
+                font-family: "Poppins", sans-serif;
+                line-height: 18px;
+                cursor: pointer;
+
+                .arrow {
+                    margin-left: 10px;
+                }
+                &:hover {
+                    border: 1.3px solid #215aff;
+                }
+                &:active {
+                    border: 1.3px solid #215aff;
+                }
+            }
+            .dropdownContent {
+                width: 270px;
+                padding-bottom: 10px;
+                display: none;
+                box-sizing: border-box;
+                position: absolute;
+                background-color: $white;
+                min-width: 160px;
+                box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+                z-index: 1;
+
+                a {
+                    padding-left: 24px;
+                    display: flex;
+                    align-items: center;
+                    color: black;
+                    height: 43px;
+                    font-size: 12px;
+                    font-weight: 500;
+                    font-family: "Poppins", sans-serif;
+                    line-height: 18px;
+                    text-decoration: none;
+
+                    &:hover {
+                        background-color: $darkRed;
+                        color: $white;
+                    }
+                }
+            }
+        }
+    }
+    .imagesAndLoad {
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+
+        .mockUps {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+
+            .publicationList {
+                .photosPostsContainer {
+                    .postMockup {
+                        a {
+                            .imgPostItem {
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        .loadMoreContainer {
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+            box-sizing: border-box;
+            padding-bottom: 24px;
+
+            a {
+                width: 272px;
+                height: 50px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                font-family: "Space Mono", sans-serif;
+                font-size: 12px;
+                color: $black;
+                background-color: $mediumGrey;
+                border: none;
+                border-radius: 2px;
+            }
+        }
+    }
+}
+
+// Interactive classes fetched by JS for the filters
+.activeBlock {
+    display: block !important;
+    position: relative !important;
+}
+.buttonBorderStyle {
+    border-radius: 8px 8px 0 0 !important;
+}
+
+@media screen and (min-width: 768px) {
+    .filtersImages {
+        box-sizing: border-box;
+        margin: 0 5%;
+    }
+    .filters {
+        width: 100%;
+        position: relative;
+        display: flex;
+        flex-direction: row;
+        justify-content: space-between;
+        align-items: center;
+        padding: 30px 0;
+        gap: 4%;
+
+        .catFor {
+            box-sizing: border-box;
+            width: 48%;
+            gap: 4%;
+            display: flex;
+            flex-direction: row;
+            justify-content: space-between;
+
+            .projectTypeContainer {
+                width: 48%;
+                button {
+                    width: 100%;
+                }
+                .dropdownContent {
+                    width: 100%;
+                    a {
+                    }
+                }
+            }
+        }
+        .imagesAndLoad {
+            .mockUps {
+                .publicationList {
+                    display: flex;
+                    flex-direction: row;
+                    flex-wrap: wrap;
+                    justify-content: space-between;
+                    gap: 24px;
+
+                    .photosPostsContainer {
+                        box-sizing: border-box;
+                        width: calc(50% - 24px);
+                        margin-bottom: 20px;
+                        margin-left: 0;
+                        margin-right: 0;
+                        display: flex;
+                        flex-direction: row;
+                        justify-content: center;
+                        flex-wrap: wrap;
+
+                        .postMockup {
+                            a {
+                                .imgPostItem {
+                                    object-fit: cover;
+                                    aspect-ratio: 1.88/1.65;
+                                    width: 100%;
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .loadMoreContainer {
+                a {
+                }
+            }
+        }
+    }
+}
+@media screen and (min-width: 1024px) {
+    .filters {
+        .catFor {
+            .projectTypeContainer {
+                button {
+                }
+                .dropdownContent {
+                    a {
+                    }
+                }
+            }
+        }
+        .imagesAndLoad {
+            .mockUps {
+                .publicationList {
+                    .photosPostsContainer {
+                        .postMockup {
+                            a {
+                                .imgPostItem {
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            .loadMoreContainer {
+                a {
+                }
+            }
+        }
+    }
+}
+
+// single-project, project page
+.projectWrap {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0 5%;
+    .imageWrap {
+        max-width: 1000px;
+        height: auto;
+        img {
+            aspect-ratio: 1.5/1;
+            object-fit: contain;
+        }
+    }
+    .textWrap {
+        max-width: 800px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        h1 {
+        }
+        p {
+            text-align: left;
+        }
+    }
+}
+// Error 404 page
+.errorContainer {
+    margin: 0 5%;
+    display: flex;
+    max-width: 800px;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+
+    .textContainer {
+        max-width: 90vw;
+    }
+    .imgContainer {
+        max-width: 80%;
+        max-height: 800px;
+        img {
+            aspect-ratio: 1/1;
+            height: 100%;
+            width: 100%;
+        }
+    }
 }
 
 // Animations and keyframes
