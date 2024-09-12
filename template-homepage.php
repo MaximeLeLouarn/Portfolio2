@@ -151,10 +151,11 @@ get_header();
                     <div class="globeContainer">
                         <div id="globe-container"></div>
                     </div>
-                    <div class="connect">
-                        <h3>Connectez votre projet au monde</h3>
-                    </div>
                 </section>
+                <div class="connect">
+                    <h3>Connectez votre projet au monde</h3>
+                    <?= do_shortcode('[contact-form-7 id="546be3f" title="Contact form 1"]'); ?>
+                </div>
            </div>
 
     </div>
