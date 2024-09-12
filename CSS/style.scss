@@ -217,7 +217,7 @@ header {
     }
 }
 .openedMenu.openingTheMenu.fixedMenu {
-    background-color: rgba(0, 0, 0, 0.2);
+    background-color: rgba(0, 0, 0, 0.3);
 
     .menu-mobile-menu-container {
         height: 100%;
@@ -1123,30 +1123,40 @@ main#primary {
 }
 
 // single-project, project page
-.projectWrap {
-    min-height: 100vh;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    margin: 0 5%;
-    .imageWrap {
-        max-width: 1000px;
-        height: auto;
-        img {
-            aspect-ratio: 1.5/1;
-            object-fit: contain;
-        }
-    }
-    .textWrap {
-        max-width: 800px;
+.projectsAndContacts {
+    position: relative;
+    z-index: 1;
+    padding-top: 48px;
+    background-color: $black;
+
+    .projectWrap {
         display: flex;
         flex-direction: column;
-        justify-content: center;
-        h1 {
+        justify-content: start;
+        align-items: center;
+        margin: 0 5%;
+        padding-bottom: 48px;
+        .imageWrap {
+            max-width: 1000px;
+            width: 100%;
+            height: auto;
+            img {
+                width: 100%;
+                height: auto;
+                aspect-ratio: 1.5/1;
+                object-fit: contain;
+            }
         }
-        p {
-            text-align: left;
+        .textPWrap {
+            padding-top: 24px;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 32px;
+            p {
+                text-align: center;
+            }
         }
     }
 }
@@ -1175,6 +1185,7 @@ main#primary {
 
 // Contact Form 7
 .connect {
+    margin: 0 5%;
     padding-top: 42px;
     height: 600px;
 

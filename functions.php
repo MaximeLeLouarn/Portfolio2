@@ -161,7 +161,7 @@ function portfoliomax_scripts() {
 		// Deregister these scripts on other pages
 		wp_dequeue_script('portfoliomax-globe');
 	}
-	if (is_page('homepage') || (is_singular() && get_page_template_slug() === 'single-project.php')) {
+	if (is_page('homepage') || is_singular('project')) {
 		wp_enqueue_script( 'portfoliomax-particlesBg', get_template_directory_uri() . '/js/particles.js', array('jquery'), _S_VERSION, true );
 	} else {
 		wp_dequeue_script('portfoliomax-particlesBg');
