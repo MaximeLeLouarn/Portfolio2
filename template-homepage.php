@@ -96,54 +96,69 @@ get_header();
         <div id="particles-js"></div>
 
             <div class="pcContainer">
-                <section class="projets">
+                <section class="projets" id="projetsAncor">
                     <h2>Projets et travaux récents</h2>
                     <div class="projectGrid">
+                    <?php
+                    $projects = get_posts([
+                        'post_type'   => 'project',
+                        'post_status' => 'publish',
+                        'post_name__in' => ['koukaki', 'nathalie-mota', 'med-it'],
+                        'numberposts' => 3, // Adjust the number based on how many posts you need
+                    ]);
 
-                        <!-- Grid with 6 elements -->
-                        <div class="projectContainer flex1">
-                            <h3>Koukaki</h3>
-                            <a href="#">
-                                <div class="parallaxeWrapper">
-                                    <img class="rotateF" src="<?= get_template_directory_uri() . '/assets/AstronautKoukaki.png' ?>" alt="Astronaut floating and holding Koukaki's project on his laptop">
-                                </div>
-                            </a>
-                        </div>
-                        <div class="textProject flex2">
-                            <p>Site de formation, demandant de programmer beaucoup d'animations visuelles.</p>
-                        </div>
-                        
-                        <div class="textProject flex4">
-                            <p>Site de formation, demandant une connaissance profonde des mécanismes du back end de WordPress pour
-                                en exploiter les données.
-                            </p>
-                        </div>
-                        <div class="projectContainer flex3">
-                            <h3>Nathalie Mota</h3>
-                            <a href="#">
-                                <div class="parallaxeWrapper">
-                                    <img class="rotateB" src="<?= get_template_directory_uri() . '/assets/AstronautMota.png' ?>" alt="Astronaut floating and holding Nathalie Mota's project on his laptop">
-                                </div>
-                            </a>
-                        </div>
+                    // Create an associative array to map the slugs to their URLs
+                    $project_links = [];
+                    foreach ($projects as $project) {
+                        $project_links[$project->post_name] = get_permalink($project->ID);
+                    }
+                    ?>
 
-                        <div class="projectContainer flex5">
-                            <h3>Fingerstyle</h3>
-                            <a href="#">
-                                <div class="parallaxeWrapper">
-                                    <img class="rotateF" src="<?= get_template_directory_uri() . '/assets/AstronautMota.png' ?>" alt="Astronaut floating and holding Fingerstyle's project on his laptop">
-                                </div>
-                            </a>
-                        </div>
+                    <!-- Now you can use $project_links to dynamically generate the links -->
+                    <div class="projectContainer flex1">
+                        <h3>Koukaki</h3>
+                        <a href="<?= esc_url($project_links['koukaki']); ?>">
+                            <div class="parallaxeWrapper">
+                                <img class="rotateF" src="<?= get_template_directory_uri() . '/assets/AstronautKoukaki.png' ?>" alt="Astronaut floating and holding Koukaki's project on his laptop">
+                            </div>
+                        </a>
+                    </div>
+                    <div class="textProject flex2">
+                        <p>Site de formation, demandant de programmer beaucoup d'animations visuelles.</p>
+                    </div>
+
+                    <div class="textProject flex4">
+                        <p>Site de formation, demandant une connaissance profonde des mécanismes du back end de WordPress pour
+                            en exploiter les données.
+                        </p>
+                    </div>
+                    <div class="projectContainer flex3">
+                        <h3>Nathalie Mota</h3>
+                        <a href="<?= esc_url($project_links['nathalie-mota']); ?>">
+                            <div class="parallaxeWrapper">
+                                <img class="rotateB" src="<?= get_template_directory_uri() . '/assets/AstronautMota.png' ?>" alt="Astronaut floating and holding Nathalie Mota's project on his laptop">
+                            </div>
+                        </a>
+                    </div>
+                    <div class="projectContainer flex5">
+                        <h3>Med-it</h3>
+                        <a href="<?= esc_url($project_links['med-it']); ?>">
+                            <div class="parallaxeWrapper">
+                                <img class="rotateF" src="<?= get_template_directory_uri() . '/assets/AstronautMed-it.png' ?>" alt="Astronaut floating and holding Fingerstyle's project on his laptop">
+                            </div>
+                        </a>
+                    </div>
+
                         <div class="textProject-padBTM flex6">
-                            <p>Site réalisé dans le but de créer un espace communautaire autour du Fingerstyle, une pratique
-                                musicale qui consiste à jouer sur des instruments à cordes uniquement avec les doigts, et réaliser des polyrythmies et autres
-                                techniques avancées.
+                            <p>Site de formation, demandant un débuggage dans le code et la base de donnée à de multiples niveaux.
                             </p>
                         </div>
 
                     </div>
-                    <button class="seeProjects">Voir tous les projets</button>
+                    <!-- <button class="seeProjects">Voir tous les projets</button> -->
+                    <a class="lienCV" href="<?= get_template_directory_uri() . '/assets/CV_Maxime_Le_Louarn.pdf' ?>" download="CV_Maxime_Le_Louarn.pdf">
+                        <button>Vous pouvez télécharger mon CV ici au format PDF</button>
+                    </a>
                 </section>
 
 
@@ -152,9 +167,14 @@ get_header();
                         <div id="globe-container"></div>
                     </div>
                 </section>
-                <div class="connect">
+                <div class="connect" id="connectAncor">
                     <h3>Connectez votre projet au monde</h3>
                     <?= do_shortcode('[contact-form-7 id="546be3f" title="Contact form 1"]'); ?>
+                </div>
+                <div class="portfolioTools">
+                    <p>This portfolio was made with the following techniques techniques and tools : plain JS/CSS animations, WordPress backend 
+                        with AJAX requests, ACF, three.js, particles.js, swipper, globe.gl.
+                    </p>
                 </div>
            </div>
 

@@ -10,6 +10,7 @@ $darkGrey: #c4c4c4;
 $mediumGrey: #d8d8d8;
 $lightGrey: #e5e5e5;
 $labelBorders: #b8bbc2;
+$buttonTB: rgb(207 206 239);
 
 // Include the fonts
 @font-face {
@@ -71,6 +72,14 @@ a {
     text-decoration: none;
     cursor: pointer;
     color: $white;
+}
+button {
+    font-family: "Space Mono", sans-serif;
+    font-weight: normal;
+    font-size: 16px;
+    text-decoration: none;
+    cursor: pointer;
+    border: none;
 }
 
 // Setting the fonts styles
@@ -308,7 +317,8 @@ footer#colophon {
             height: 100%;
 
             ul#footer-menu {
-                gap: 10%;
+                margin: 0 5%;
+                gap: 6%;
                 height: 100%;
                 display: flex;
                 flex-direction: column;
@@ -550,6 +560,8 @@ main#primary {
     justify-content: center;
     align-items: center;
     .projets {
+        padding-top: 32px;
+
         h2 {
             text-align: center;
             padding: 20px 0;
@@ -611,6 +623,18 @@ main#primary {
             border: transparent;
             border-radius: 8px;
             cursor: pointer;
+        }
+
+        .lienCV {
+            padding-bottom: 48px;
+
+            button {
+                margin: 0 5%;
+                text-align: center;
+                padding: 10px;
+                border-radius: 6px;
+                background-color: $buttonTB;
+            }
         }
     }
 }
@@ -1153,7 +1177,30 @@ main#primary {
             display: flex;
             flex-direction: column;
             justify-content: center;
+            align-items: center;
             gap: 32px;
+
+            p {
+                text-align: left;
+            }
+        }
+        .githubLink {
+            padding-top: 32px;
+            display: flex;
+            flex-direction: row;
+            justify-content: start;
+            max-width: 800px;
+            gap: 24px;
+            align-items: center;
+
+            .githubIconWrapper {
+                height: 56px;
+
+                img {
+                    object-fit: contain;
+                    height: 100%;
+                }
+            }
             p {
                 text-align: center;
             }
@@ -1228,10 +1275,16 @@ main#primary {
                 margin-top: 20px; // Add margin to push the submit button below the textarea
                 width: auto; // Adjust the width if needed
                 padding: 10px 20px; // Adjust padding for button styling
-                background-color: $white;
+                background-color: $buttonTB;
+                border-radius: 6px;
             }
         }
     }
+}
+.portfolioTools {
+    max-width: 800px;
+    padding-bottom: 24px;
+    margin: 0 5%;
 }
 
 // Animations and keyframes
